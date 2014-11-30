@@ -1,5 +1,4 @@
 from django import forms
-
 from lists.models import Item
 
 

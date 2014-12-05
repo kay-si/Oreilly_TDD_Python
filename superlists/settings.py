@@ -102,4 +102,5 @@ LOGGING = {
             'handlers': [ 'console' ],
         },
     'root': { 'level': 'INFO' }
-}
+    }
+    }

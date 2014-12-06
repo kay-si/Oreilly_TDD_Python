@@ -6,4 +6,7 @@ class User( models.Model ):
     last_login = models.DateTimeField( default= timezone.now )
     REQUIRED_FIELDS = ()
     USERNAME_FIELD  = 'email'
+
+    def is_authenticated( self ):
+        return True
 # Create your models here.

@@ -1,11 +1,11 @@
-from django.core.urlresolvers import resolve
-from django.test import TestCase
+from unittest.mock import Mock, patch
+
 from django.http import HttpRequest
-from django.template.loader import render_to_string
+from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils.html import escape
 from lists.models import Item, List
-from lists.views import home_page, new_list
+from lists.views import new_list
 from lists.forms import (
         EMPTY_LIST_ERROR,
         DUPLICATE_ITEM_ERROR,
@@ -160,13 +160,19 @@ class NewListTest( TestCase ):
         self.assertEqual( List.objects.count(), 0 )
         self.assertEqual( Item.objects.count(), 0 )
 
-    def test_list_owner_is_saved_if_user_is_authenticated( self ):
+    @patch( 'lists.views.List' )
+    def test_list_owner_is_saved_if_user_is_authenticated( self, mockList ):
+        mock_list = List.objects.create()
+        mock_list.save = Mock()
+        mockList.return_value = mock_list
+
         request = HttpRequest()
-        request.uesr = User.objects.create( email='a@b.com' )
+        request.user = User.objects.create( )
         request.POST['text'] = 'new list item'
+
         new_list( request )
-        list_ = List.objects.first()
-        self.assertEqual( list_.owner, request.user )
+
+        self.assertEqual( mock_list.owner, request.user )
 
 class MyListsTest( TestCase ):
     def test_my_lists_url_renders_my_lists_template( self ):

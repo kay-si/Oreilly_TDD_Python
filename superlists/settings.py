@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'lists',
     'accounts',
+    'functional_tests',
 )
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -106,6 +107,15 @@ LOGGING = {
         'django': {
             'handlers': [ 'console' ],
         },
+        'accounts': {
+            'handlers': [ 'console' ],
+        },
+        'lists': {
+            'handlers': [ 'console' ],
+        },
     'root': { 'level': 'INFO' }
     }
     }
+
+DOMAIN= "localhost"
+ALLOWED_HOSTS = [ DOMAIN ]

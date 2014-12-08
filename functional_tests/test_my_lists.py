@@ -51,7 +51,7 @@ class MyListTest( FunctionalTest ):
         self.assertEqual( self.browser.current_url, second_list_url )
 
         # She logs out. The "My lists" option disappears
-        self.brwoser.find_element_by_id( 'id_logout') .click ()
+        self.browser.find_element_by_id( 'id_logout') .click ()
         self.assertEqual(
             self.browser.find_elements_by_link_text( 'My lists' ),
             []

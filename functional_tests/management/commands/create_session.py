@@ -10,7 +10,6 @@ class Command( BaseCommand ):
         self.stdout.write( session_key )
 
 def create_pre_authenticated_session( email ):
-    print( email )
     user = User.objects.create( email= email )
     session = SessionStore()
     session[ SESSION_KEY ] = user.pk

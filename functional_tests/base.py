@@ -5,6 +5,9 @@ import os
 import time
 from selenium.common.exceptions import WebDriverException
 from datetime import datetime
+from django.conf import settings
+from .management.commands.create_session import create_pre_authenticated_session
+
 
 DEFAULT_WAIT = 5
 SCREEN_DUMP_LOCATION = os.path.abspath(
@@ -43,7 +46,7 @@ class FunctionalTest( StaticLiveServerTestCase ):
         if self._test_has_failed():
             if not os.path.exists( SCREEN_DUMP_LOCATION ):
                 os.makedirs( SCREEN_DUMP_LOCATION )
-            for ix, handle in enmerate( self.browser.window_handles ):
+            for ix, handle in enumerate( self.browser.window_handles ):
                 self._windowid = ix
                 self.browser.switch_to_window( handle )
                 self.take_screenshot()
@@ -75,6 +78,7 @@ class FunctionalTest( StaticLiveServerTestCase ):
             folder= SCREEN_DUMP_LOCATION,
             classname= self.__class__.__name__,
             method= self._testMethodName,
+            windowid= self._windowid,
             timestamp= timestamp,
         )
 
@@ -114,3 +118,16 @@ class FunctionalTest( StaticLiveServerTestCase ):
 
         # one more try, which will raise any errors if they are outstanding
         return function_with_assertion()
+
+    def create_pre_authenticated_session( self, email ):
+        if self.against_staging:
+            session_key = create_session_on_server( self.server_host, email)
+        else:
+            session_key = create_pre_authenticated_session( email )
+        ## 404 pages load the quickest!
+        self.browser.get( self.server_url + '/404_no_such_url/' )
+        self.browser.add_cookie( dict(
+            name= settings.SESSION_COOKIE_NAME,
+            value= session_key,
+            path= '/',
+        ))

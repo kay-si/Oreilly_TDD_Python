@@ -2,10 +2,6 @@ from django.conf import settings
 from .base import FunctionalTest
 from .server_tools import create_session_on_server
 from .management.commands.create_session import create_pre_authenticated_session
-#from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY, get_user_model
-#User = get_user_model()
-#
-#from django.contrib.sessions.backends.db import SessionStore
 
 class MyListTest( FunctionalTest ):
 
@@ -38,7 +34,10 @@ class MyListTest( FunctionalTest ):
         # She sees that her list is in there, named according to its
         # first list item
         self.browser.find_element_by_link_text( 'Reticulate splines' ).click()
-        self.assertEqual( self.browser.current_url, first_list_url )
+#        self.assertEqual( self.browser.current_url, first_list_url )
+        self.wait_for(
+            lambda: self.assertEqual( self.browser.current_url, 'barf' )
+        )
 
         # She decides to start another list, just to see
         self.browser.get( self. server_url )
